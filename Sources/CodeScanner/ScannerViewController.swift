@@ -96,7 +96,7 @@ extension CodeScannerView {
             // Send back their simulated data, as if it was one of the types they were scanning for
             found(ScanResult(
                 string: parentView.simulatedData,
-                type: parentView.codeTypes.first ?? .qr, image: nil, corners: []
+                type: parentView.codeTypes.first ?? .qr, image: nil, corners: [], descriptor: nil
             ))
         }
         
@@ -106,7 +106,7 @@ extension CodeScannerView {
         var previewLayer: AVCaptureVideoPreviewLayer!
 
         private lazy var viewFinder: UIImageView? = {
-            guard let image = UIImage(named: "viewfinder", in: .module, with: nil) else {
+            guard let image = UIImage(named: "viewfinder", in: .main, with: nil) else {
                 return nil
             }
 
@@ -117,7 +117,7 @@ extension CodeScannerView {
         
         private lazy var manualCaptureButton: UIButton = {
             let button = UIButton(type: .system)
-            let image = UIImage(named: "capture", in: .module, with: nil)
+            let image = UIImage(named: "capture", in: .main, with: nil)
             button.setBackgroundImage(image, for: .normal)
             button.addTarget(self, action: #selector(manualCapturePressed), for: .touchUpInside)
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -452,7 +452,8 @@ extension CodeScannerView.ScannerViewController: AVCaptureMetadataOutputObjectsD
 
         handler = { [weak self] image in
             guard let self else { return }
-            let result = ScanResult(string: stringValue, type: readableObject.type, image: image, corners: readableObject.corners)
+            let descriptor = readableObject.descriptor
+            let result = ScanResult(string: stringValue, type: readableObject.type, image: image, corners: readableObject.corners, descriptor: descriptor)
 
             switch parentView.scanMode {
             case .once:
@@ -529,8 +530,8 @@ extension CodeScannerView.ScannerViewController: UIImagePickerControllerDelegate
                 feature.topRight,
                 feature.topLeft
             ]
-
-            let result = ScanResult(string: qrCodeLink, type: .qr, image: qrcodeImg, corners: corners)
+            
+            let result = ScanResult(string: qrCodeLink, type: .qr, image: qrcodeImg, corners: corners, descriptor: nil)
             found(result)
         }
     }

@@ -41,6 +41,8 @@ public struct ScanResult {
   
     /// The corner coordinates of the scanned code.
     public let corners: [CGPoint]
+    
+    public let descriptor: CIBarcodeDescriptor?
 }
 
 /// The operating mode for CodeScannerView.
